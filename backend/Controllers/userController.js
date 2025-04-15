@@ -130,7 +130,7 @@ exports.updateUser = async (req, res) => {
 exports.deleteUser = async (req, res) => {
   const userId = req.userId; // ได้จาก middleware ตรวจสอบ JWT
 
-  console.log("🔹 userId:", userId); // ✅ Debug ดูค่าที่ได้
+  console.log("🔹 userId:", userId); // 
 
   if (!userId) {
     return res.status(401).json({ error: 'Unauthorized: No user ID provided' });

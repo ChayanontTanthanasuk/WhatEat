@@ -31,7 +31,7 @@ model Restaurant {
   description String?
   address     String
   phone       String?
-  website     String?
+  website   String  @db.VarChar(1000) // จำกัดความยาวแค่ 100 ตัวอักษร
   menus       Menu[]
   bestSellers BestSellerMenu[]
   recommended RecommendedMenu[]

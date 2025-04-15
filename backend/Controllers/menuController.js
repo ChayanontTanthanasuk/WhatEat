@@ -56,8 +56,6 @@ async function addMenu(req, res) {
     res.status(500).json({ error: 'เกิดข้อผิดพลาดในการเพิ่มเมนู' });
   }
 }
-
-
 // แก้ไขเมนู (PUT)
 async function updateMenu(req, res) {
   try {
@@ -124,6 +122,12 @@ async function getMenu(req, res) {
 
     if (!menu) {
       return res.status(404).json({ error: 'ไม่พบเมนู' });
+    }
+
+    // แปลง path image จาก C:\... เป็น URL ที่ client ใช้ได้
+    if (menu.image) {
+      const imagePath = menu.image.split('Middleware\\')[1];
+      menu.image = `http://192.168.1.172:5000/images/${imagePath.replace(/\\/g, '/')}`;
     }
 
     res.status(200).json(menu);
@@ -279,8 +283,8 @@ async function getCategory(req, res) {
     const category = await prisma.category.findUnique({
       where: { id: parseInt(id) },
       include: {
-        menus:{
-          include:{
+        menus: {
+          include: {
             restaurant: true,
             nutrition: true,
             suitableFor: true,
@@ -291,6 +295,20 @@ async function getCategory(req, res) {
 
     if (!category) {
       return res.status(404).json({ error: 'ไม่พบหมวดหมู่' });
+    }
+
+    // แปลง path image ในแต่ละเมนูให้เป็น URL ที่ client ใช้ได้
+    if (category.menus && category.menus.length > 0) {
+      category.menus.forEach(menu => {
+        if (menu.image) {
+          const parts = menu.image.split('images\\');
+          if (parts.length > 1) {
+            const imagePath = parts[1].replace(/\\/g, '/');
+            const baseUrl = `${req.protocol}://${req.get('host')}`;
+            menu.image = `${baseUrl}/images/${imagePath}`;
+          }
+        }
+      });
     }
 
     res.status(200).json(category);
@@ -332,6 +350,18 @@ async function recommendMenus(req, res) {
         suitableFor: true,
         category: true,
       },
+    });
+
+    // แปลง path รูปภาพทั้งหมดในเมนูให้เป็น URL ที่สามารถใช้จาก client
+    recommendedMenus.forEach(menu => {
+      if (menu.image) {
+        const parts = menu.image.split('images\\');
+        if (parts.length > 1) {
+          const imagePath = parts[1].replace(/\\/g, '/');
+          const baseUrl = `${req.protocol}://${req.get('host')}`;
+          menu.image = `${baseUrl}/images/${imagePath}`;
+        }
+      }
     });
 
     res.status(200).json(recommendedMenus);
