@@ -16,11 +16,7 @@ const { API_BASE_URL } = config;
 
 const categories = [
   { id: 1, name: "Meal", image: require("../../assets/icons/Meal.png") },
-  {
-    id: 2,
-    name: "Appetizers",
-    image: require("../../assets/icons/Appetizers.png"),
-  },
+  { id: 2, name: "Appetizers", image: require("../../assets/icons/Appetizers.png"),},
   { id: 3, name: "Dessert", image: require("../../assets/icons/Dessert.png") },
   { id: 4, name: "Salad", image: require("../../assets/icons/Salad.png") },
   { id: 5, name: "Drinks", image: require("../../assets/icons/Drinks.png") },
