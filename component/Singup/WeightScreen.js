@@ -28,7 +28,7 @@ export default function WeightScreen({ navigation }) {
       </View>
       <TouchableOpacity
         style={styles.nextButton}
-        onPress={() => navigation.navigate("Gender")}
+        onPress={() => navigation.navigate("Height")}
       >
         <Text style={styles.nextText}>Next</Text>
       </TouchableOpacity>

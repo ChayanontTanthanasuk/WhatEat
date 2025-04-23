@@ -19,9 +19,9 @@ export default function DiseaseScreen({ navigation }) {
       <Text style={styles.title}>Do you have any{"\n"}chronic conditions?</Text>
       <Text style={styles.subtitle}>คุณมีโรคประจำตัวมั้ย?</Text>
 
-      {renderButton("โรคเบาหวาน", require("./imgs/dog1.png"))}
-      {renderButton("ความดันโลหิตสูง", require("./imgs/dog1.png"))}
-      {renderButton("โรคหัวใจ", require("./imgs/dog1.png"))}
+      {renderButton("โรคเบาหวาน", require("./imgs/heart1.png"))}
+      {renderButton("ความดันโลหิตสูง", require("./imgs/heart2.png"))}
+      {renderButton("โรคหัวใจ", require("./imgs/heart3.png"))}
       {renderButton("อื่นๆ", null)}
 
       <TouchableOpacity

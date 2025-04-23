@@ -16,13 +16,17 @@ const { API_BASE_URL } = config;
 
 const categories = [
   { id: 1, name: "Meal", image: require("../../assets/icons/Meal.png") },
-  { id: 2, name: "Appetizers", image: require("../../assets/icons/Appetizers.png"),},
+  {
+    id: 2,
+    name: "Appetizers",
+    image: require("../../assets/icons/Appetizers.png"),
+  },
   { id: 3, name: "Dessert", image: require("../../assets/icons/Dessert.png") },
   { id: 4, name: "Salad", image: require("../../assets/icons/Salad.png") },
   { id: 5, name: "Drinks", image: require("../../assets/icons/Drinks.png") },
 ];
 
-const MealPage = () => {
+const DessertPage = () => {
   const [meals, setMeals] = useState([]);
   const navigation = useNavigation();
 
@@ -37,10 +41,9 @@ const MealPage = () => {
         console.error("Error fetching meals:", error);
       }
     };
-  
+
     fetchMeals();
   }, []);
-  
 
   return (
     <View style={styles.container}>
@@ -58,7 +61,10 @@ const MealPage = () => {
               <Text style={styles.sortByOption}>Popular</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.filterButton}>
+            <TouchableOpacity
+              style={styles.filterButton}
+              onPress={() => navigation.navigate("Filter")} // 👈 เพิ่มตรงนี้
+            >
               <Image
                 source={require("../../assets/icons/Filter.png")}
                 style={styles.filterIcon}
@@ -67,34 +73,32 @@ const MealPage = () => {
           </View>
 
           {meals.map((item) => {
-  console.log("Image URL:", item.image); // ✅ ใส่ตรงนี้เพื่อดูค่า URL ของภาพ
+            console.log("Image URL:", item.image); // ✅ ใส่ตรงนี้เพื่อดูค่า URL ของภาพ
 
-  return (
-    <TouchableOpacity
-      key={item.id}
-      onPress={() => navigation.navigate("MealDetail", { meal: item })}
-      style={styles.mealCard}
-    >
-      <Image
-  source={{ uri: item.image }}
-  style={styles.mealImage}
-/>
-      <View style={styles.mealDetails}>
-        <Text style={styles.mealName}>{item.name}</Text>
-        <View style={styles.ratingContainer}>
-          <Text style={styles.ratingValue}>4.5</Text>
-          <Image
-            source={require("../../assets/icons/Star.png")}
-            style={styles.starIcon}
-          />
-        </View>
-        <Text style={styles.mealPrice}>{item.price} ฿</Text>
-      </View>
-      <View style={styles.line} />
-    </TouchableOpacity>
-  );
-})}
-
+            return (
+              <TouchableOpacity
+                key={item.id}
+                onPress={() =>
+                  navigation.navigate("MealDetail", { meal: item })
+                }
+                style={styles.mealCard}
+              >
+                <Image source={{ uri: item.image }} style={styles.mealImage} />
+                <View style={styles.mealDetails}>
+                  <Text style={styles.mealName}>{item.name}</Text>
+                  <View style={styles.ratingContainer}>
+                    <Text style={styles.ratingValue}>4.5</Text>
+                    <Image
+                      source={require("../../assets/icons/Star.png")}
+                      style={styles.starIcon}
+                    />
+                  </View>
+                  <Text style={styles.mealPrice}>{item.price} ฿</Text>
+                </View>
+                <View style={styles.line} />
+              </TouchableOpacity>
+            );
+          })}
         </View>
       </ScrollView>
 
@@ -216,4 +220,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MealPage;
+export default DessertPage;

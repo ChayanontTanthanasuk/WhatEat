@@ -22,8 +22,8 @@ export default function GenderScreen({ navigation }) {
       <Text style={styles.title}>What is your gender?</Text>
       <Text style={styles.subtitle}>เพศของคุณคืออะไร?</Text>
       <View style={styles.row}>
-        {renderOption("Male", require("./imgs/dog1.png"))}
-        {renderOption("Female", require("./imgs/dog1.png"))}
+        {renderOption("Male", require("./imgs/male.png"))}
+        {renderOption("Female", require("./imgs/female.png"))}
       </View>
       {renderOption("Other", null)}
 

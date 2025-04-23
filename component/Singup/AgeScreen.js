@@ -9,7 +9,7 @@ export default function AgeScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
-      <Image source={require("./imgs/dog1.png")} style={styles.image} />
+      <Image source={require("./imgs/dog.png")} style={styles.image} />
       <Text style={styles.title}>Your Age.</Text>
       <View style={styles.pickerContainer}>
         <RNPickerSelect

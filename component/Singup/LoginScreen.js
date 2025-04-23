@@ -76,10 +76,10 @@ const LoginScreen = ({ navigation }) => {
 
             <Text style={styles.or}>or login with</Text>
             <View style={styles.socialContainer}>
-              <Image source={require('./imgs/dog1.png')} style={styles.logo2} />
-              <Image source={require('./imgs/dog1.png')} style={styles.logo2} />
-              <Image source={require('./imgs/dog1.png')} style={styles.logo2} />
-              <Image source={require('./imgs/dog1.png')} style={styles.logo2} />
+              <Image source={require('./imgs/tiktok.png')} style={styles.logo2} />
+              <Image source={require('./imgs/Facebook.png')} style={styles.logo2} />
+              <Image source={require('./imgs/Google.png')} style={styles.logo2} />
+              <Image source={require('./imgs/Apple_black.png')} style={styles.logo2} />
             </View>
           </View>
         </ScrollView>

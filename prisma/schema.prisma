@@ -3,82 +3,73 @@ generator client {
 }
 
 datasource db {
-  provider  = "mysql"
-  url       = env("DATABASE_URL")
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
-model User {
-  id               Int              @id @default(autoincrement())
-  email            String           @unique
-  password         String
-  name             String?
-  picture          String?
-  role             String           @default("user") // user, admin
-  weight           Float?
-  height           Float?
-  age              Int?
-  gender           String?          // male, female, other
-  healthConditions HealthCondition[] // โรคที่ผู้ใช้มี
-  cartItems        Cart[]           // สินค้าในตะกร้า
-  orders           Order[]          // รายการสั่งซื้อ
-  createdAt        DateTime         @default(now())
-  updatedAt        DateTime         @updatedAt
-}
-
-model Restaurant {
-  id          Int       @id @default(autoincrement())
-  name        String
-  description String?
-  address     String
-  phone       String?
-  website   String  @db.VarChar(1000) // จำกัดความยาวแค่ 100 ตัวอักษร
-  menus       Menu[]
-  bestSellers BestSellerMenu[]
-  recommended RecommendedMenu[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-model Menu {
-  id          Int       @id @default(autoincrement())
-  name        String
-  description String?
-  price       Float
-  image       String?   // รูปภาพของเมนู
-  restaurant  Restaurant @relation(fields: [restaurantId], references: [id])
+model bestsellermenu {
+  id           Int        @id @default(autoincrement())
   restaurantId Int
-  nutrition   Nutrition?
-  suitableFor HealthCondition[] // อาหารที่เหมาะกับโรคอะไรบ้าง
-  category    Category @relation(fields: [categoryId], references: [id])
-  categoryId  Int
-  bestSellers BestSellerMenu[]
-  recommended RecommendedMenu[]
-  cartItems   Cart[]
-  orderItems  OrderItem[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-model BestSellerMenu {
-  id           Int       @id @default(autoincrement())
-  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
-  restaurantId Int
-  menu         Menu       @relation(fields: [menuId], references: [id])
   menuId       Int
   createdAt    DateTime   @default(now())
+  menu         menu       @relation(fields: [menuId], references: [id], map: "BestSellerMenu_menuId_fkey")
+  restaurant   restaurant @relation(fields: [restaurantId], references: [id], map: "BestSellerMenu_restaurantId_fkey")
+
+  @@index([menuId], map: "BestSellerMenu_menuId_fkey")
+  @@index([restaurantId], map: "BestSellerMenu_restaurantId_fkey")
 }
 
-model RecommendedMenu {
-  id           Int       @id @default(autoincrement())
-  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
-  restaurantId Int
-  menu         Menu       @relation(fields: [menuId], references: [id])
-  menuId       Int
-  createdAt    DateTime   @default(now())
+model cart {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  menuId    Int
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  menu      menu     @relation(fields: [menuId], references: [id], map: "Cart_menuId_fkey")
+  user      user     @relation(fields: [userId], references: [id], map: "Cart_userId_fkey")
+
+  @@index([menuId], map: "Cart_menuId_fkey")
+  @@index([userId], map: "Cart_userId_fkey")
 }
 
-model Nutrition {
-  id          Int     @id @default(autoincrement())
+model category {
+  id   Int    @id @default(autoincrement())
+  name String @unique(map: "Category_name_key")
+  menu menu[]
+}
+
+model healthcondition {
+  id   Int    @id @default(autoincrement())
+  name String @unique(map: "HealthCondition_name_key")
+  menu menu[] @relation("healthconditiontomenu")
+  user user[] @relation("healthconditiontouser")
+}
+
+model menu {
+  id              Int               @id @default(autoincrement())
+  name            String
+  description     String?
+  price           Float
+  restaurantId    Int
+  categoryId      Int
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime
+  image           String?
+  bestsellermenu  bestsellermenu[]
+  cart            cart[]
+  category        category          @relation(fields: [categoryId], references: [id], map: "Menu_categoryId_fkey")
+  restaurant      restaurant        @relation(fields: [restaurantId], references: [id], map: "Menu_restaurantId_fkey")
+  nutrition       nutrition?
+  orderitem       orderitem[]
+  recommendedmenu recommendedmenu[]
+  healthcondition healthcondition[] @relation("healthconditiontomenu")
+
+  @@index([categoryId], map: "Menu_categoryId_fkey")
+  @@index([restaurantId], map: "Menu_restaurantId_fkey")
+}
+
+model nutrition {
+  id          Int      @id @default(autoincrement())
   calories    Float
   carbs       Float
   protein     Float
@@ -87,54 +78,79 @@ model Nutrition {
   sugar       Float
   sodium      Float
   cholesterol Float
-  menu        Menu    @relation(fields: [menuId], references: [id])
-  menuId      Int     @unique // One-to-One relationship
+  menuId      Int      @unique(map: "Nutrition_menuId_key")
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  updatedAt   DateTime
+  menu        menu     @relation(fields: [menuId], references: [id], map: "Nutrition_menuId_fkey")
 }
 
-model HealthCondition {
-  id       Int     @id @default(autoincrement())
-  name     String  @unique // เช่น "Diabetes", "Hypertension"
-  users    User[]  // ผู้ใช้ที่มีเงื่อนไขสุขภาพนี้
-  menus    Menu[]  // อาหารที่เหมาะสมกับโรคนี้
-}
-
-
-model Category {
-  id   Int    @id @default(autoincrement())
-  name String @unique // เช่น "Meal", "Appetizers", "Dessert", "Salad", "Drinks"
-  menus Menu[]
-}
-
-model Cart {
-  id        Int  @id @default(autoincrement())
-  user      User @relation(fields: [userId], references: [id])
-  userId    Int
-  menu      Menu @relation(fields: [menuId], references: [id])
-  menuId    Int
-  quantity  Int  @default(1)
-  createdAt DateTime @default(now())
-}
-
-model Order {
-  id        Int       @id @default(autoincrement())
-  user      User      @relation(fields: [userId], references: [id])
-  userId    Int
+model order {
+  id         Int         @id @default(autoincrement())
+  userId     Int
   totalPrice Float
-  status    String    @default("pending") // pending, completed, cancelled
-  items     OrderItem[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  status     String      @default("pending")
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime
+  user       user        @relation(fields: [userId], references: [id], map: "Order_userId_fkey")
+  orderitem  orderitem[]
+
+  @@index([userId], map: "Order_userId_fkey")
 }
 
-model OrderItem {
-  id        Int  @id @default(autoincrement())
-  order     Order @relation(fields: [orderId], references: [id])
+model orderitem {
+  id        Int      @id @default(autoincrement())
   orderId   Int
-  menu      Menu @relation(fields: [menuId], references: [id])
   menuId    Int
   quantity  Int
-  price     Float // ราคาต่อชิ้น
+  price     Float
   createdAt DateTime @default(now())
+  menu      menu     @relation(fields: [menuId], references: [id], map: "OrderItem_menuId_fkey")
+  order     order    @relation(fields: [orderId], references: [id], map: "OrderItem_orderId_fkey")
+
+  @@index([menuId], map: "OrderItem_menuId_fkey")
+  @@index([orderId], map: "OrderItem_orderId_fkey")
+}
+
+model recommendedmenu {
+  id           Int        @id @default(autoincrement())
+  restaurantId Int
+  menuId       Int
+  createdAt    DateTime   @default(now())
+  menu         menu       @relation(fields: [menuId], references: [id], map: "RecommendedMenu_menuId_fkey")
+  restaurant   restaurant @relation(fields: [restaurantId], references: [id], map: "RecommendedMenu_restaurantId_fkey")
+
+  @@index([menuId], map: "RecommendedMenu_menuId_fkey")
+  @@index([restaurantId], map: "RecommendedMenu_restaurantId_fkey")
+}
+
+model restaurant {
+  id              Int               @id @default(autoincrement())
+  name            String
+  description     String?
+  address         String
+  phone           String?
+  website         String            @db.VarChar(1000)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime
+  bestsellermenu  bestsellermenu[]
+  menu            menu[]
+  recommendedmenu recommendedmenu[]
+}
+
+model user {
+  id              Int               @id @default(autoincrement())
+  email           String            @unique(map: "User_email_key")
+  password        String
+  name            String?
+  picture         String?
+  role            String            @default("user")
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime
+  age             Int?
+  gender          String?
+  height          Float?
+  weight          Float?
+  cart            cart[]
+  order           order[]
+  healthcondition healthcondition[] @relation("healthconditiontouser")
 }

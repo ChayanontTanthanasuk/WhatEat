@@ -15,7 +15,7 @@ export default function FoodAllergyScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
-      <Image source={require("./imgs/dog1.png")} style={styles.image} />
+      <Image source={require("./imgs/dog3.png")} style={styles.image} />
       <Text style={styles.title}>Are you allergic to any foods?</Text>
       <Text style={styles.subtitle}>คุณมีการแพ้อาหารมั้ย?</Text>
 
