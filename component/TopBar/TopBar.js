@@ -11,9 +11,12 @@ import {
   TextInput
 } from 'react-native';
 import { GestureHandlerRootView, PanGestureHandler, State } from 'react-native-gesture-handler';
+import OrderScreen from '../MyOrder/OrderScreen';
+import { useNavigation } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
 const DRAWER_WIDTH = width * 0.75;
+
 
 export const TopBarWithDrawer = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -111,12 +114,13 @@ export const TopBarWithDrawer = () => {
           </View>
           
           {/* User Profile Button (Drawer Toggle) */}
-          <TouchableOpacity onPress={toggleDrawer} style={styles.profileButton}>
-            <Image 
-              source={require('../../assets/icons/User.png')}
-              style={styles.profileImage}
-            />
-          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('OrderScreen')} style={styles.profileButton}>
+  <Image 
+    source={require('../../assets/icons/User.png')}
+    style={styles.profileImage}
+  />
+</TouchableOpacity>
+
         </View>
         
         {/* Semi-transparent overlay - Always rendered but with conditional opacity */}

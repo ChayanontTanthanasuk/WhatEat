@@ -31,6 +31,10 @@ import FilterScreen from "../component/Filter/FilterScreen";
 // Setting Page
 import SettingsScreen from "./Setting/Setting";
 
+// Order
+import Setting from "./MyOrder/Setting";
+
+
 const Stack = createStackNavigator();
 
 export default function StackNavigator() {
@@ -68,6 +72,10 @@ export default function StackNavigator() {
 
         {/* Setting Pages */}
         <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
+
+       {/* Setting Pages */}
+       <Stack.Screen name="OrderScreen" component={Setting} />
+
 
         
       </Stack.Navigator>
